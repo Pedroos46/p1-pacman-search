@@ -22,8 +22,11 @@ import traceback
 import pdb
 from collections import defaultdict
 import util
+from html import escape
+
 
 class Grades:
+
   "A data structure for project grades, along with formatting code to display them"
   def __init__(self, projectName, questionsAndMaxesList,
                gsOutput=False, edxOutput=False, muteOutput=False):
@@ -44,6 +47,8 @@ class Grades:
     self.gsOutput = gsOutput  # GradeScope output
     self.mute = muteOutput
     self.prereqs = defaultdict(set)
+    "*** CANVIAT PER A COMPATIBILITAT AMB PYTHON 3.8***"
+    cgi.escape = escape
 
     #print('Autograder transcript for %s' % self.project)
     print('Starting on %d-%d at %d:%02d:%02d' % self.start)

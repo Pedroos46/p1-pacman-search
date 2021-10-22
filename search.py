@@ -82,9 +82,9 @@ def depthFirstSearch(problem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
     """
-    print("Start:", problem.getStartState())
+    """print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    print("Start's successors:", problem.getSuccessors(problem.getStartState()))"""
 
     "*** YOUR CODE HERE ***"
     """We initialize all the variables we need to implement the search algorithm"""
@@ -130,10 +130,11 @@ def breadthFirstSearch(problem):
     expandedNodes = []
     frontier = util.Queue() #it will save triplets of type [state:tuple int, direction:string, cost:int)
     initial_state = problem.getStartState()
-    frontier.push([initial_state, "", 0])  #it doesn't have a direction because is the initial state. The cost is 0.
     path_record = {} #Dict that saves the parent info of each child that has been visited
     path = [] #Actions to do from the inital state to the goal
-
+    frontier_state = []
+    frontier.push([initial_state, "", 0])  #it doesn't have a direction because is the initial state. The cost is 0.
+    frontier_state.append(initial_state)
     """ We check if the frontier is empty or not to proceed with the computations """
     while not frontier.isEmpty():
         """ Pop a node to the frontier and add it to the extended ones """
@@ -158,8 +159,9 @@ def breadthFirstSearch(problem):
         if not, records the parent of the node and deletes the node from the frontier """
         succesorsArray = problem.getSuccessors(node[0])
         for n in succesorsArray:
-            if n not in frontier.list and n[0] not in expandedNodes:
+            if n[0] not in frontier_state and n[0] not in expandedNodes:
                 frontier.push(n)
+                frontier_state.append(n[0])
                 path_record[n[0]] = node
     util.raiseNotDefined()
 
@@ -169,10 +171,11 @@ def uniformCostSearch(problem):
     expandedNodes = []
     frontier = util.PriorityQueue()  # it will save triplets of type [state:tuple int, direction:string, cost:int)
     initial_state = problem.getStartState()
-    frontier.push([initial_state, "", 0], 0)  # it doesn't have a direction because is the initial state. The priority is 0.
     path_record = {}  # Dict that saves the parent info of each child that has been visited
     path = []  # Actions to do from the inital state to the goal
-
+    frontier_state = []
+    frontier.push([initial_state, "", 0], 0)  # it doesn't have a direction because is the initial state. The cost is 0.
+    frontier_state.append(initial_state)
     """ We check if the frontier is empty or not to proceed with the computations """
     while not frontier.isEmpty():
         """ Pop a node to the frontier and add it to the extended ones """
@@ -197,7 +200,8 @@ def uniformCostSearch(problem):
         if not, records the parent of the node and deletes the node from the frontier """
         succesorsArray = problem.getSuccessors(node[0])
         for n in succesorsArray:
-            if n[0] not in expandedNodes:
+            if n[0] not in frontier_state and n[0] not in expandedNodes:
+                frontier_state.append(n[0])
                 frontier.update(n, n[2])
                 path_record[n[0]] = node
     util.raiseNotDefined()
@@ -215,10 +219,11 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     expandedNodes = []
     frontier = util.PriorityQueueWithFunction(heuristic)  # it will save triplets of type [state:tuple int, direction:string, cost:int)
     initial_state = problem.getStartState()
-    frontier.push([initial_state, "", 0])  # it doesn't have a direction because is the initial state. The priority is 0.
     path_record = {}  # Dict that saves the parent info of each child that has been visited
     path = []  # Actions to do from the inital state to the goal
-
+    frontier_state = []
+    frontier.push([initial_state, "", 0])  # it doesn't have a direction because is the initial state. The cost is 0.
+    frontier_state.append(initial_state)
     """ We check if the frontier is empty or not to proceed with the computations """
     while not frontier.isEmpty():
         """ Pop a node to the frontier and add it to the extended ones """
@@ -243,7 +248,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         if not, records the parent of the node and deletes the node from the frontier """
         succesorsArray = problem.getSuccessors(node[0])
         for n in succesorsArray:
-            if n[0] not in expandedNodes:
+            if n[0] not in frontier_state and n[0] not in expandedNodes:
+                frontier_state.append(n[0])
                 frontier.update(n, n[2])
                 path_record[n[0]] = node
     util.raiseNotDefined()
