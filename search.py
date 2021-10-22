@@ -87,20 +87,22 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
     "*** YOUR CODE HERE ***"
+    """We initialize all the variables we need to implement the search algorithm"""
     expandedNodes = []
-    frontier = util.Stack()
+    frontier = util.Stack() #it will save triplets of type [state:tuple int, direction:string, cost:int)
     initial_state = problem.getStartState()
-    frontier.push([initial_state, 0, 0])
-    path_record = {}
-    path = []
+    frontier.push([initial_state, "", 0])  #it doesn't have a direction because is the initial state. The cost is 0.
+    path_record = {} #Dict that saves the parent info of each child that has been visited
+    path = [] #Actions to do from the inital state to the goal
 
     """ We check if the frontier is empty or not to proceed with the computations """
     while not frontier.isEmpty():
-        """ Pop a frontier node, and add it to the extended ones and check if its a Goal State """
+        """ Pop a node to the frontier and add it to the extended ones """
         node = frontier.pop()
         expandedNodes.append(node[0])
-        """ If the state is the goal one, we estart the process of finalizing """
+        """ Check if the state is the goal one"""
         if problem.isGoalState(node[0]):
+            """it recovers the actions the pacman have to do from the initial state to the goal one."""
             child = node
 
             while child[0] is not initial_state:
@@ -125,12 +127,79 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
+    expandedNodes = []
+    frontier = util.Queue() #it will save triplets of type [state:tuple int, direction:string, cost:int)
+    initial_state = problem.getStartState()
+    frontier.push([initial_state, "", 0])  #it doesn't have a direction because is the initial state. The cost is 0.
+    path_record = {} #Dict that saves the parent info of each child that has been visited
+    path = [] #Actions to do from the inital state to the goal
+
+    """ We check if the frontier is empty or not to proceed with the computations """
+    while not frontier.isEmpty():
+        """ Pop a node to the frontier and add it to the extended ones """
+        node = frontier.pop()
+        expandedNodes.append(node[0])
+        """ Check if the state is the goal one"""
+        if problem.isGoalState(node[0]):
+            """it recovers the actions the pacman have to do from the initial state to the goal one."""
+            child = node
+
+            while child[0] is not initial_state:
+                parent = path_record[child[0]]
+                path.append(parent[1])
+                child = parent
+
+            path = path[::-1]
+            path = path[1:]
+            path.append(node[1])
+            return path
+
+        """ It retrieves the successors per node, checks if we have already expanded to that node and 
+        if not, records the parent of the node and deletes the node from the frontier """
+        succesorsArray = problem.getSuccessors(node[0])
+        for n in succesorsArray:
+            if n not in frontier.list and n[0] not in expandedNodes:
+                frontier.push(n)
+                path_record[n[0]] = node
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    expandedNodes = []
+    frontier = util.PriorityQueue()  # it will save triplets of type [state:tuple int, direction:string, cost:int)
+    initial_state = problem.getStartState()
+    frontier.push([initial_state, "", 0], 0)  # it doesn't have a direction because is the initial state. The priority is 0.
+    path_record = {}  # Dict that saves the parent info of each child that has been visited
+    path = []  # Actions to do from the inital state to the goal
+
+    """ We check if the frontier is empty or not to proceed with the computations """
+    while not frontier.isEmpty():
+        """ Pop a node to the frontier and add it to the extended ones """
+        node = frontier.pop()
+        expandedNodes.append(node[0])
+        """ Check if the state is the goal one"""
+        if problem.isGoalState(node[0]):
+            """it recovers the actions the pacman have to do from the initial state to the goal one."""
+            child = node
+
+            while child[0] is not initial_state:
+                parent = path_record[child[0]]
+                path.append(parent[1])
+                child = parent
+
+            path = path[::-1]
+            path = path[1:]
+            path.append(node[1])
+            return path
+
+        """ It retrieves the successors per node, checks if we have already expanded to that node and 
+        if not, records the parent of the node and deletes the node from the frontier """
+        succesorsArray = problem.getSuccessors(node[0])
+        for n in succesorsArray:
+            if n[0] not in expandedNodes:
+                frontier.update(n, n[2])
+                path_record[n[0]] = node
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -143,6 +212,40 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    expandedNodes = []
+    frontier = util.PriorityQueueWithFunction(heuristic)  # it will save triplets of type [state:tuple int, direction:string, cost:int)
+    initial_state = problem.getStartState()
+    frontier.push([initial_state, "", 0])  # it doesn't have a direction because is the initial state. The priority is 0.
+    path_record = {}  # Dict that saves the parent info of each child that has been visited
+    path = []  # Actions to do from the inital state to the goal
+
+    """ We check if the frontier is empty or not to proceed with the computations """
+    while not frontier.isEmpty():
+        """ Pop a node to the frontier and add it to the extended ones """
+        node = frontier.pop()
+        expandedNodes.append(node[0])
+        """ Check if the state is the goal one"""
+        if problem.isGoalState(node[0]):
+            """it recovers the actions the pacman have to do from the initial state to the goal one."""
+            child = node
+
+            while child[0] is not initial_state:
+                parent = path_record[child[0]]
+                path.append(parent[1])
+                child = parent
+
+            path = path[::-1]
+            path = path[1:]
+            path.append(node[1])
+            return path
+
+        """ It retrieves the successors per node, checks if we have already expanded to that node and 
+        if not, records the parent of the node and deletes the node from the frontier """
+        succesorsArray = problem.getSuccessors(node[0])
+        for n in succesorsArray:
+            if n[0] not in expandedNodes:
+                frontier.update(n, n[2])
+                path_record[n[0]] = node
     util.raiseNotDefined()
 
 
