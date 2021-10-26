@@ -257,38 +257,72 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     initial_state = problem.getStartState()
     path_record = {}  # Dict that saves the parent info of each child that has been visited
     path = []  # Actions to do from the inital state to the goal
-    frontier_state = []
-    frontier.push([initial_state, "", 0], heuristic(initial_state,problem))  # it doesn't have a direction because is the initial state. The cost is 0.
-    frontier_state.append(initial_state)
+
+    frontier.push([initial_state, "", 0], 0)  # it doesn't have a direction because is the initial state. The cost is 0.
+
     """ We check if the frontier is empty or not to proceed with the computations """
     while not frontier.isEmpty():
-        """ Pop a node to the frontier and add it to the extended ones """
+        """ Pop a node from the frontier  """
         node = frontier.pop()
-        expandedNodes.append(node[0])
+
         """ Check if the state is the goal one"""
         if problem.isGoalState(node[0]):
-            """it recovers the actions the pacman have to do from the initial state to the goal one."""
+            """it backpropagates through the states to obtain the actions the pacman have to do from the initial state to the goal one."""
             child = node
 
             while child[0] is not initial_state:
-                parent = path_record[child[0]]
-                path.append(parent[1])
-                child = parent
+                father = path_record[child[0]]
+                path.append(father[1])
+                child = father
 
-            path = path[::-1]
+            path = path[::-1]  # we reverse the list to have the order from initial state to goal state
             path = path[1:]
             path.append(node[1])
+
             return path
 
         """ It retrieves the successors per node, checks if we have already expanded to that node and 
-        if not, records the parent of the node and deletes the node from the frontier """
-        succesorsArray = problem.getSuccessors(node[0])
-        for n in succesorsArray:
-            if n[0] not in frontier_state and n[0] not in expandedNodes:
-                frontier_state.append(n[0])
-                frontier.update(n,node[2] + n[2] + heuristic(n[0],problem))
-                path_record[n[0]] = node
+        if not, records the parent of the node as well as the cost from the parent to the node """
 
+        "Check if the node it has not been expanded yet"
+        if node[0] not in expandedNodes:
+            expandedNodes.append(node[0])
+            succesorsArray = problem.getSuccessors(node[0])
+
+            for n in succesorsArray:
+                """We backpropagate through the states to compute the total cost from the initial state to node "n" """
+                fam_val = 0
+                if n[0] not in expandedNodes:
+                    """Checks if the node expanded is not the initial state """
+                    if node[0] is not initial_state:
+                        grandpa = path_record[node[0]]
+                        fam_val = grandpa[2]
+                        """Until we arrive to the initial node, we sum all costs it takes to go to the expanded node"""
+                        while grandpa[0] != initial_state:
+                            grandpa = path_record[grandpa[0]]
+                            fam_val += grandpa[2]
+                    """The total cost is the sum of the successor cost plus the family cost"""
+                    total_cost = n[2] + fam_val
+                    frontier.update(n, total_cost + heuristic(n[0],problem))  # we push it to the priority queue
+
+                    """We add the successors as a new entry of the path record unless they where recorded before"""
+                    if n[0] in path_record.keys():
+                        """We compute the total family cost of the recorded path in order to compare it later with the new path we are checking """
+                        father = path_record[n[0]]
+                        fam_val2 = father[2]
+                        if father[0] != initial_state:
+                            grandpa2 = path_record[father[0]]
+                            fam_val2 += grandpa2[2]
+                            while grandpa2[0] != initial_state:
+                                grandpa2 = path_record[grandpa2[0]]
+                                fam_val2 += grandpa2[2]
+                        """If the new path has a lower cost than the path recorded then we change the successor node's father"""
+                        if fam_val2 > total_cost:
+                            path_record[n[0]] = [node[0], node[1], n[2]]
+                    else:
+                        """If the succesor wasn't recorded before and it's not the initial state we create a new entry in the record"""
+                        if n[0] is not initial_state:
+                            path_record[n[0]] = [node[0], node[1], n[2]]
 
 
     util.raiseNotDefined()
