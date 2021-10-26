@@ -325,9 +325,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                         initial state we create a new entry in the record"""
                         if n[0] is not initial_state:
                             path_record[n[0]] = [node[0], node[1], n[2]]
-
-
-    util.raiseNotDefined()
+    return None
 
 
 # Abbreviations
