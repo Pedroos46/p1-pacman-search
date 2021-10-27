@@ -284,9 +284,15 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         """ It retrieves the successors per node, checks if we have already expanded to that node and 
         if not, records the parent of the node as well as the cost from the parent to the node """
 
+
+        if  type(node[0][0]) is tuple:
+            position = node[0][0]
+        else:
+            position = node[0]
+
         "Check if the node it has not been expanded yet"
-        if node[0] not in expandedNodes:
-            expandedNodes.append(node[0])
+        if position not in expandedNodes:
+            expandedNodes.append(position)
             succesorsArray = problem.getSuccessors(node[0])
 
             for n in succesorsArray:
@@ -303,7 +309,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                             fam_val += grandpa[2]
                     """The total cost is the sum of the successor cost plus the family cost"""
                     total_cost = n[2] + fam_val
-                    frontier.update(n, total_cost + heuristic(n[0],problem))  # we push it to the priority queue
+                    heur = heuristic(n[0],problem)
+                    frontier.update(n, total_cost + heur)  # we push it to the priority queue
 
                     """We add the successors as a new entry of the path record unless they where recorded before"""
                     if n[0] in path_record.keys():

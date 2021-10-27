@@ -452,9 +452,50 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    position, foodGrid = state
+    score = 0
+    expandedPos = list(position)
+    expandedPos[0] += 1
+    i = 1
+    while not problem.walls[expandedPos[0]][expandedPos[1]]:
+        if not foodGrid[expandedPos[0]][expandedPos[1]]:
+            score += 1/i
+
+        i += 1
+        expandedPos[0] += 1
+
+    expandedPos = list(position)
+    expandedPos[0] -= 1
+    i = 1
+    while not problem.walls[expandedPos[0]][expandedPos[1]]:
+        if not foodGrid[expandedPos[0]][expandedPos[1]]:
+            score += 1 / i
+
+        i += 1
+        expandedPos[0] -= 1
+
+    expandedPos = list(position)
+    expandedPos[1] += 1
+    i = 1
+    while not problem.walls[expandedPos[0]][expandedPos[1]]:
+        if not foodGrid[expandedPos[0]][expandedPos[1]]:
+            score += 1 / i
+
+        i += 1
+        expandedPos[1] += 1
+
+    expandedPos = list(position)
+    expandedPos[1] -= 1
+    i = 1
+    while not problem.walls[expandedPos[0]][expandedPos[1]]:
+        if not foodGrid[expandedPos[0]][expandedPos[1]]:
+            score += 1 / i
+
+        i += 1
+        expandedPos[1] -= 1
+
+    return score
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
