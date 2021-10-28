@@ -323,11 +323,13 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                             while grandpa2[0] != initial_state:
                                 grandpa2 = path_record[grandpa2[0]]
                                 fam_val2 += grandpa2[2]
-                        """If the new path has a lower cost than the path recorded then we change the successor node's father"""
+                        """If the new path has a lower cost than the path recorded then
+                         we change the successor node's father"""
                         if fam_val2 > total_cost:
                             path_record[n[0]] = [node[0], node[1], n[2]]
                     else:
-                        """If the succesor wasn't recorded before and it's not the initial state we create a new entry in the record"""
+                        """If the succesor wasn't recorded before and it's not the 
+                        initial state we create a new entry in the record"""
                         if n[0] is not initial_state:
                             path_record[n[0]] = [node[0], node[1], n[2]]
 
