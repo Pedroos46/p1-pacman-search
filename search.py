@@ -136,6 +136,7 @@ def breadthFirstSearch(problem):
     frontier.push([initial_state, "", 0])  #it doesn't have a direction because is the initial state. The cost is 0.
     frontier_state.append(initial_state)
     """ We check if the frontier is empty or not to proceed with the computations """
+
     while not frontier.isEmpty():
         """ Pop a node to the frontier and add it to the extended ones """
         node = frontier.pop()

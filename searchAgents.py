@@ -309,8 +309,9 @@ class CornersProblem(search.SearchProblem):
             if tupleNode not in corners:
                 """Add to corners list from startstate"""
                 corners.append(tupleNode)
-            """return lenght of corners"""
-            return len(corners) == 4 ##NOMES TRUE QUAN LEN == 4
+
+            """return """
+            return len(corners) == 4
         else:
             return False
 
