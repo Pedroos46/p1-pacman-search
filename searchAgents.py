@@ -310,7 +310,7 @@ class CornersProblem(search.SearchProblem):
                 """Add to corners list from startstate"""
                 corners.append(tupleNode)
             """return lenght of corners"""
-            return len(corners) == 4 ##TODO 4? OR LENGH?
+            return len(corners) == 4 ##NOMES TRUE QUAN LEN == 4
         else:
             return False
 
@@ -326,7 +326,7 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
-        corners = state[1];
+        corners = state[1]
 
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
@@ -337,20 +337,22 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+
             x, y = state[0]
+
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
 
             if hitsWall is False:
                 nextNode = (nextx, nexty)
-                if nextNode in self.corners and nextNode not in list(corners):
-                    corners.append(nextNode)
+                if nextNode in self.corners and nextNode not in corners:
+                        corners.append(nextNode)
 
                 successors.append( ((nextNode, corners), action, 1) )
 
         self._expanded += 1 # DO NOT CHANGE
-        return successors ##TODO ARREGLAR?
+        return successors
 
     def getCostOfActions(self, actions):
         """
@@ -383,24 +385,6 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    visitedCorners = state[1]
-    cornersNext = []
-    for corner in corners:
-        if corner not in visitedCorners:
-            cornersNext.append(corner)
-
-    # While not all corners are visited find via manhattanDistance
-    #  the most efficient path for each corner
-    totalCost = 0
-    coordinate = state[0]
-    curPoint = coordinate
-    while cornersNext:
-        heuristic_cost, corner = \
-            min([(util.manhattanDistance(curPoint, corner), corner) for corner in cornersNext])
-        cornersNext.remove(corner)
-        curPoint = corner
-        totalCost += heuristic_cost
-    return totalCost
 
 
     return 0 # Default to trivial solution

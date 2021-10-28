@@ -145,10 +145,21 @@ def breadthFirstSearch(problem):
             """it recovers the actions the pacman have to do from the initial state to the goal one."""
             child = node
 
-            while child[0] is not initial_state:
-                parent = path_record[child[0]]
-                path.append(parent[1])
-                child = parent
+            """Especific for q5"""
+            tempChild = child[0]
+            if isinstance(tempChild[0], tuple) and isinstance(tempChild[1], list):
+                while tempChild[0] is not initial_state[0]:
+                    parent = path_record[tempChild[0]]
+                    path.append(tempChild[1])
+                    child = parent
+
+            else:
+                """ q2 """
+                while child[0] is not initial_state:
+                    parent = path_record[child[0]]
+                    path.append(parent[1])
+                    child = parent
+
 
             path = path[::-1]
             path = path[1:]
@@ -159,11 +170,21 @@ def breadthFirstSearch(problem):
         if not, records the parent of the node and deletes the node from the frontier """
         succesorsArray = problem.getSuccessors(node[0])
         for n in succesorsArray:
-            if n[0] not in frontier_state and n[0] not in expandedNodes:
-                frontier.push(n)
-                frontier_state.append(n[0])
-                path_record[n[0]] = node
-    util.raiseNotDefined()
+            """Especific for q5"""
+            tempn = n[0]
+            if isinstance(tempn, tuple) and isinstance(tempn[1], list):
+                if tempn[0] not in frontier_state and tempn[0] not in expandedNodes:
+                    frontier.push(n)
+                    frontier_state.append(tempn[0])
+                    path_record[tempn[0]] = node
+
+            else:
+                """ q2 """
+                if n[0] not in frontier_state and n[0] not in expandedNodes:
+                    frontier.push(n)
+                    frontier_state.append(n[0])
+                    path_record[n[0]] = node
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -247,6 +268,9 @@ def nullHeuristic(state, problem=None):
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
+
+
+
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
@@ -325,7 +349,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                         initial state we create a new entry in the record"""
                         if n[0] is not initial_state:
                             path_record[n[0]] = [node[0], node[1], n[2]]
-
 
     util.raiseNotDefined()
 
