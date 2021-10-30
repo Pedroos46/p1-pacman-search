@@ -198,7 +198,7 @@ class EightPuzzleSearchProblem(search.SearchProblem):
     def getStartState(self):
         return puzzle
 
-    def isGoalState(self,state):
+    def isGoalState(self, state):
         return state.isGoal()
 
     def getSuccessors(self,state):

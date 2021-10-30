@@ -299,15 +299,18 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition
+        return [self.startingPosition,self.food]
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        for corner in self.corners:
-            if self.food[corner[0], corner[1]] is True:
+        if state[0] in self.food:
+            state[1][state[0]] = False
+            print("State:", state, " GoalState:", self.food)
+        for f in state[1]:
+            if f is True:
                 return False
         return True
 
@@ -332,7 +335,12 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-
+            x, y = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if hitsWall is False:
+                successors.append([[(nextx,nexty),state[1]], action, 1])
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -348,7 +356,6 @@ class CornersProblem(search.SearchProblem):
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
         return len(actions)
-
 
 def cornersHeuristic(state, problem):
     """

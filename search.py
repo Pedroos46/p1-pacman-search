@@ -135,6 +135,8 @@ def breadthFirstSearch(problem):
     frontier_state = []
     frontier.push([initial_state, "", 0])  #it doesn't have a direction because is the initial state. The cost is 0.
     frontier_state.append(initial_state)
+    if len(initial_state[0]) == 2:
+        initial_state = initial_state[0]
     """ We check if the frontier is empty or not to proceed with the computations """
     while not frontier.isEmpty():
         """ Pop a node to the frontier and add it to the extended ones """
@@ -143,12 +145,19 @@ def breadthFirstSearch(problem):
         """ Check if the state is the goal one"""
         if problem.isGoalState(node[0]):
             """it recovers the actions the pacman have to do from the initial state to the goal one."""
-            child = node
+            if len(node[0][0]) == 2:
+                child = node[0][0]
+            else:
+                child = node[0]
 
-            while child[0] is not initial_state:
-                parent = path_record[child[0]]
-                path.append(parent[1])
-                child = parent
+            while child is not initial_state:
+                parent = path_record[child]
+                if len(parent[0][0]) == 2:
+                    path.append(parent[1])
+                    child = parent[0][0]
+                else:
+                    path.append(parent[1])
+                    child = parent[0]
 
             path = path[::-1]
             path = path[1:]
@@ -162,8 +171,11 @@ def breadthFirstSearch(problem):
             if n[0] not in frontier_state and n[0] not in expandedNodes:
                 frontier.push(n)
                 frontier_state.append(n[0])
-                path_record[n[0]] = node
-    util.raiseNotDefined()
+                if len(n[0][0]) == 2:
+                    path_record[n[0][0]] = node
+                else:
+                    path_record[n[0]] = node
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -180,7 +192,6 @@ def uniformCostSearch(problem):
     while not frontier.isEmpty():
         """ Pop a node from the frontier  """
         node = frontier.pop()
-
         """ Check if the state is the goal one"""
         if problem.isGoalState(node[0]):
             """it backpropagates through the states to obtain the actions the pacman have to do from the initial state to the goal one."""
@@ -218,7 +229,7 @@ def uniformCostSearch(problem):
                             grandpa = path_record[grandpa[0]]
                             fam_val += grandpa[2]
                     """The total cost is the sum of the successor cost plus the family cost"""
-                    total_cost = n[2]  + fam_val
+                    total_cost = n[2] + fam_val
                     frontier.update(n, total_cost) #we push it to the priority queue
 
                     """We add the successors as a new entry of the path record unless they where recorded before"""
